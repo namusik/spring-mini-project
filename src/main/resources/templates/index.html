@@ -1,0 +1,115 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <title>Bootstrap Example</title>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css">
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.16.0/umd/popper.min.js"></script>
+    <script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>
+    <style>
+        .container {
+            margin-top: 50px;
+        }
+
+        .table {
+            margin-top: 50px;
+        }
+
+        .search {
+            margin-top: 30px;
+        }
+    </style>
+    <script>
+        $(document).ready(function (){
+            getPosts();
+        })
+
+        function getPosts() {
+            $.ajax({
+                type: 'GET',
+                dataType: 'JSON',
+                url: '/api/posts',
+                success: function (response) {
+                    console.log(response);
+                    for (let i = 0; i < response.length; i++) {
+                        let post = response[i];
+                        console.log(`${post}`);
+                        let temp_html = `<tr>
+                                            <td onclick="window.location.href='/api/posts/${post.id}'">${post.title}</td>
+                                            <td>${post.username}</td>
+                                            <td>${post.modifiedAt}</td>
+                                        </tr>`;
+                        $('#posts').append(temp_html);
+                    }
+                }
+            })
+        }
+
+        function search() {
+            let index = $('#sel1').val();
+            let searchword = $('#title').val();
+            if (searchword === '') {
+                alert("검색어를 입력하시오")
+                return;
+            }
+            $.ajax({
+                type: "GET",
+                url: `/api/search/${searchword}/${index}`,
+                success: function (response) {
+                    console.log(response);
+                    if (response.length < 1) {
+                        alert('검색 결과가 없습니다.');
+                    } else {
+                        alert(`${response.length}개 검색완료`);
+                    }
+                    $('#posts').empty();
+                    for (let i = 0; i < response.length; i++) {
+                        let post = response[i];
+                        console.log(`${post}`);
+                        let temp_html = `<tr>
+                                            <td onclick="window.location.href='/api/posts/${post.id}'">${post.title}</td>
+                                            <td>${post.username}</td>
+                                            <td>${post.modifiedAt}</td>
+                                        </tr>`;
+                        $('#posts').append(temp_html);
+                    }
+                }
+            })
+        }
+    </script>
+</head>
+<body>
+
+<div class="container">
+    <a href="/">
+        <h2>익명게시판</h2>
+    </a>
+    <p>익명으로 자유롭게 글을 남겨요</p>
+    <button onclick="window.location.href='/writeform'">글 쓰기</button>
+    <p class="search">
+        <select class="form-control" id="sel1" style="width: 150px">
+            <option>제목</option>
+            <option>작성자</option>
+            <option>내용</option>
+        </select>
+        <input class="title" id="title" type="text" placeholder="검색어를 입력해주세요">
+        <button onclick="search()">
+            검색하기
+        </button>
+    </p>
+    <table class="table">
+        <thead class="thead-dark">
+        <tr>
+            <th>제목</th>
+            <th>작성자</th>
+            <th>작성시간</th>
+        </tr>
+        </thead>
+        <tbody id="posts">
+        </tbody>
+    </table>
+</div>
+</body>
+</html>

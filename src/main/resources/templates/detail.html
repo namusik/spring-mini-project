@@ -1,0 +1,157 @@
+<!DOCTYPE HTML>
+<html xmlns:th="http://www.thymeleaf.org" lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Insert title here</title>
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css">
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.16.0/umd/popper.min.js"></script>
+    <script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>
+    <style>
+        .container {
+            margin-top: 50px;
+        }
+
+    </style>
+    <script>
+        $(document).ready(function () {
+            $('.pwarea').hide();
+            $('#editarea').hide();
+            $('#delete').hide();
+        });
+
+        function showpw() {
+            $('.pwarea').show();
+        }
+
+        function checkpw() {
+            let inputpw = $('#passwordcheck').val();
+            console.log(inputpw);
+            let realpw = $('#password').text();
+            if (inputpw === realpw) {
+                $('#detailarea').show();
+                $('#editarea').show();
+                $('#delete').show();
+            } else {
+                alert("비밀번호가 틀립니다");
+            }
+        }
+        function isValidContents(contents) {
+            if (contents === '') {
+                alert('내용을 입력해주세요');
+                return false;
+            }
+
+            if (contents.trim().length > 140) {
+                alert('공백 포함 140자 이하로 입력해주세요');
+                return false;
+            }
+            return true;
+        }
+
+        function edit() {
+            let username = $('#editusername').val();
+
+            let title = $('#edittitle').val();
+            if(isValidContents(title)===false){
+                return;
+            }
+            let content = $('#editcontent').val();
+            if(isValidContents(content)===false){
+                return;
+            }
+            let password = $('#password').text();
+            let id = $('#postid').text();
+
+            let data = {'username': username, 'title': title, 'content':content, 'password':password};
+            console.log(username, password, title, content);
+            $.ajax({
+                type: "PUT",
+                url: `/api/posts/${id}`,
+                contentType: "application/json",
+                data: JSON.stringify(data),
+                success: function (response) {
+                    alert('수정에 성공하였습니다.');
+                    window.location.href=`/api/posts/${id}`;
+                }
+            });
+        }
+
+        function deletePost(){
+            let id = $('#postid').text();
+            $.ajax({
+                type: 'DELETE',
+                url:`/api/posts/${id}`,
+                success:function (){
+                    alert('삭제 완료');
+                    window.location.href = "/";
+                },
+                error:function (reqeust, status, error){
+                    alert(request.status + request.responseText + error);
+                },
+                complete:function (){
+                    window.location.href = "/";
+                }
+            });
+        }
+    </script>
+</head>
+<body>
+<div class="container">
+    <h2>게시글 상세보기</h2>
+    <button onclick="window.location.href='/'" id="gohome">홈으로 가기</button>
+    <div id="detailarea">
+        <table>
+            <tbody>
+            <tr hidden>
+                <td th:text="아이디">아이디</td>
+                <td th:text="${post.id}" id="postid"></td>
+            </tr>
+            <tr>
+                <td th:text="닉네임">닉네임</td>
+                <td th:text="${post.username}" ></td>
+            </tr>
+            <tr hidden>
+                <td th:text="비밀번호">비밀번호</td>
+                <td id="password" th:text="${post.password}" ></td>
+            </tr>
+            <tr>
+                <td th:text="제목">제목</td>
+                <td th:text="${post.title}"></td>
+            </tr>
+            <tr>
+                <td th:text="작성시간">작성시간</td>
+                <td th:text="${post.modifiedAt}"></td>
+            </tr>
+            <tr>
+                <td th:text="내용">내용</td>
+                <td th:text="${post.content}"></td>
+            </tr>
+            </tbody>
+        </table>
+        <button onclick="showpw()">수정/삭제</button>
+        <button onclick="deletePost()" id="delete">삭제하기</button>
+    </div>
+    <div class="pwarea">
+        <input id="passwordcheck" name="" placeholder="비밀번호를 입력하세요">
+        <button onclick="checkpw()">확인</button>
+    </div>
+    <div class="form" id="editarea">
+        <div hidden class="form-group">
+            <label for="editusername">이름</label>
+            <input th:value="${post.username}" class="form-control" type="text" id="editusername" name="username">
+        </div>
+        <div class="form-group">
+            <label for="edittitle">제목</label>
+            <input th:value="${post.title}" class="form-control" type="text" id="edittitle" name="title" >
+        </div>
+        <div class="form-group">
+            <label for="editcontent">내용</label>
+            <textarea th:value="${post.content}" th:text="${post.content}" class="form-control" id="editcontent" name="content" ></textarea>
+        </div>
+        <button type="button" onclick="edit()">제출하기</button>
+    </div>
+
+</div>
+</body>
+</html>
