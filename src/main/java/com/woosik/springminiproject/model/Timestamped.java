@@ -1,4 +1,4 @@
-package com.woosik.springminiproject.domain;
+package com.woosik.springminiproject.model;
 
 import lombok.Getter;
 import org.springframework.data.annotation.CreatedDate;

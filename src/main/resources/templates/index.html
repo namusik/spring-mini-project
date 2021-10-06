@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="ko" xmlns="http://www.w3.org/1999/xhtml" xmlns:th="http://www.thymeleaf.org">
 <head>
     <title>Bootstrap Example</title>
     <meta charset="utf-8">
@@ -38,7 +38,7 @@
                         console.log(`${post}`);
                         let temp_html = `<tr>
                                             <td onclick="window.location.href='/api/posts/${post.id}'">${post.title}</td>
-                                            <td>${post.username}</td>
+                                            <td>${post.nickname}</td>
                                             <td>${post.modifiedAt}</td>
                                         </tr>`;
                         $('#posts').append(temp_html);
@@ -70,7 +70,7 @@
                         console.log(`${post}`);
                         let temp_html = `<tr>
                                             <td onclick="window.location.href='/api/posts/${post.id}'">${post.title}</td>
-                                            <td>${post.username}</td>
+                                            <td>${post.nickname}</td>
                                             <td>${post.modifiedAt}</td>
                                         </tr>`;
                         $('#posts').append(temp_html);
@@ -81,12 +81,27 @@
     </script>
 </head>
 <body>
-
 <div class="container">
     <a href="/">
         <h2>익명게시판</h2>
     </a>
-    <p>익명으로 자유롭게 글을 남겨요</p>
+    <div th:if="${nickname} == null">
+        익명으로 자유롭게 글을 남겨요
+        <button onclick="window.location.href='user/login'">
+            로그인
+        </button>
+        <button onclick="window.location.href='user/signup'">
+            회원가입
+        </button>
+    </div>
+    <div th:unless="${nickname} == null">
+        <div id="header-title-login-user">
+            <span th:text="${nickname}"></span>님 어서오세요
+        </div>
+        <a id="logout-text" href="/user/logout">
+            로그아웃
+        </a>
+    </div>
     <button onclick="window.location.href='/writeform'">글 쓰기</button>
     <p class="search">
         <select class="form-control" id="sel1" style="width: 150px">

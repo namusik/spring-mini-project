@@ -12,33 +12,32 @@
     <title>회원가입 페이지</title>
     <script>
         function onclickAdmin() {
-// Get the checkbox
+            // Get the checkbox
             var checkBox = document.getElementById("admin-check");
-// Get the output text
+            // Get the output text
             var box = document.getElementById("admin-token");
 
-// If the checkbox is checked, display the output text
+            // If the checkbox is checked, display the output text
             if (checkBox.checked == true){
                 box.style.display = "block";
             } else {
                 box.style.display = "none";
             }
         }
+
     </script>
 </head>
+
 <body>
 <div id="login-form">
     <div id="login-title">Sign up Select Shop</div>
 
     <form action="/user/signup" method="post">
-        <div class="login-id-label">Username</div>
-        <input type="text" name="username" placeholder="Username" class="login-input-box">
+        <div class="login-id-label">닉네임</div>
+        <input type="text" name="nickname" placeholder="Nickname" class="login-input-box" id="input-nickname">
 
-        <div class="login-id-label">Password</div>
+        <div class="login-id-label">비밀번호</div>
         <input type="password" name="password" class="login-input-box">
-
-        <div class="login-id-label">E-mail</div>
-        <input type="text" name="email" placeholder="E-mail" class="login-input-box">
 
         <div>
             <input id="admin-check" type="checkbox" name="admin" onclick="onclickAdmin()" style="margin-top: 40px;">관리자

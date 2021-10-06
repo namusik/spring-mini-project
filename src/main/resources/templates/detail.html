@@ -14,28 +14,16 @@
 
     </style>
     <script>
+        let editcommentid = "";
         $(document).ready(function () {
-            $('.pwarea').hide();
             $('#editarea').hide();
-            $('#delete').hide();
+            $('.editcommentform').hide();
         });
 
-        function showpw() {
-            $('.pwarea').show();
+        function editForm() {
+            $('#editarea').show();
         }
 
-        function checkpw() {
-            let inputpw = $('#passwordcheck').val();
-            console.log(inputpw);
-            let realpw = $('#password').text();
-            if (inputpw === realpw) {
-                $('#detailarea').show();
-                $('#editarea').show();
-                $('#delete').show();
-            } else {
-                alert("비밀번호가 틀립니다");
-            }
-        }
         function isValidContents(contents) {
             if (contents === '') {
                 alert('내용을 입력해주세요');
@@ -50,7 +38,7 @@
         }
 
         function edit() {
-            let username = $('#editusername').val();
+            let nickname = $('#editnickname').val();
 
             let title = $('#edittitle').val();
             if(isValidContents(title)===false){
@@ -60,11 +48,11 @@
             if(isValidContents(content)===false){
                 return;
             }
-            let password = $('#password').text();
+
             let id = $('#postid').text();
 
-            let data = {'username': username, 'title': title, 'content':content, 'password':password};
-            console.log(username, password, title, content);
+            let data = {'nickname': nickname, 'title': title, 'content':content};
+            console.log(nickname, title, content);
             $.ajax({
                 type: "PUT",
                 url: `/api/posts/${id}`,
@@ -85,14 +73,75 @@
                 success:function (){
                     alert('삭제 완료');
                     window.location.href = "/";
-                },
-                error:function (reqeust, status, error){
-                    alert(request.status + request.responseText + error);
-                },
-                complete:function (){
-                    window.location.href = "/";
                 }
             });
+        }
+
+        function saveComment(postId) {
+            let nickname = $('#nickname').text();
+            console.log(nickname);
+            if(nickname === ""){
+                alert("로그인이 필요한 기능입니다");
+                window.location.href="/user/login";
+            }else {
+                let context = $('#addcomment').val();
+                if(context == "") {
+                    alert("내용을 입력하셔야 합니다");
+                    $('#addcomment').focus();
+                }else{
+                    let data = {'context': context};
+                    console.log(context);
+                    $.ajax({
+                        type: "POST",
+                        url: `/comment/${postId}`,
+                        contentType: "application/json",
+                        data: JSON.stringify(data),
+                        success: function (response) {
+                            alert('댓글을 저장했습니다.');
+                            window.location.reload();
+                        }
+                    });
+                }
+            }
+        }
+
+        function openeditcommentarea(context, commentId) {
+            $('.commentarea').hide();
+            $('.editcommentform').show();
+            $('#editcommentinput').val(context);
+            editcommentid = commentId;
+        }
+
+        function editcomment() {
+            let context = $('#editcommentinput').val();
+            console.log(editcommentid);
+            console.log(context);
+            data = {'context': context};
+            $.ajax({
+                type: "PUT",
+                url: `/comment/${editcommentid}`,
+                contentType: "application/json",
+                data: JSON.stringify(data),
+                success: function (response) {
+                    alert('수정에 성공하였습니다.');
+                    window.location.reload();
+                }
+            });
+        }
+
+        function deleteComment(commentId) {
+            if (window.confirm("정말 삭제하시겠습니까?")) {
+                $.ajax({
+                    type: 'DELETE',
+                    url: `/comment/${commentId}`,
+                    success: function () {
+                        alert('삭제 완료');
+                        window.location.reload();
+                    }
+                });
+            } else {
+
+            }
         }
     </script>
 </head>
@@ -107,13 +156,13 @@
                 <td th:text="아이디">아이디</td>
                 <td th:text="${post.id}" id="postid"></td>
             </tr>
+            <tr hidden>
+                <td th:text="유저닉네임">유저닉네임</td>
+                <td th:text="${nickname}" id="nickname"></td>
+            </tr>
             <tr>
                 <td th:text="닉네임">닉네임</td>
-                <td th:text="${post.username}" ></td>
-            </tr>
-            <tr hidden>
-                <td th:text="비밀번호">비밀번호</td>
-                <td id="password" th:text="${post.password}" ></td>
+                <td th:text="${post.nickname}" ></td>
             </tr>
             <tr>
                 <td th:text="제목">제목</td>
@@ -129,17 +178,16 @@
             </tr>
             </tbody>
         </table>
-        <button onclick="showpw()">수정/삭제</button>
-        <button onclick="deletePost()" id="delete">삭제하기</button>
-    </div>
-    <div class="pwarea">
-        <input id="passwordcheck" name="" placeholder="비밀번호를 입력하세요">
-        <button onclick="checkpw()">확인</button>
+        <div th:if="${nickname}==${post.nickname}">
+            <button onclick="editForm()">수정하기</button>
+            <button onclick="deletePost()" id="delete">삭제하기</button>
+        </div>
+
     </div>
     <div class="form" id="editarea">
         <div hidden class="form-group">
-            <label for="editusername">이름</label>
-            <input th:value="${post.username}" class="form-control" type="text" id="editusername" name="username">
+            <label for="editnickname">이름</label>
+            <input th:value="${post.nickname}" class="form-control" type="text" id="editnickname" name="nickname">
         </div>
         <div class="form-group">
             <label for="edittitle">제목</label>
@@ -150,6 +198,42 @@
             <textarea th:value="${post.content}" th:text="${post.content}" class="form-control" id="editcontent" name="content" ></textarea>
         </div>
         <button type="button" onclick="edit()">제출하기</button>
+    </div>
+    <div>
+        <label for="addcomment">댓글작성하기</label>
+        <input type="text" name="context" id="addcomment">
+        <button th:onclick="|saveComment(${post.id})|">작성하기</button>
+    </div>
+    <div class="commentarea">
+        <table style="text-align: center">
+            <tr>
+                <th>댓글내용</th>
+                <th>작성자</th>
+                <th>작성시간</th>>
+                <th>수정</th>
+                <th>삭제</th>
+            </tr>
+            <tbody th:each="comment : ${comments}">
+                <tr>
+                    <td th:text="${comment.context}"></td>
+                    <td th:text="${comment.user.nickname}"></td>
+                    <td th:text="${comment.modifiedAt}"></td>
+                    <div th:if="${nickname}==${comment.user.nickname}">
+                        <td>
+                            <button th:data-context="${comment.context}" th:data-id="${comment.id}" onclick="openeditcommentarea(this.getAttribute('data-context'), this.getAttribute('data-id'))">수정하기</button>
+                        </td>
+                        <td>
+                            <button th:data-id="${comment.id}" onclick="deleteComment(this.getAttribute('data-id'))">삭제하기</button>
+
+                        </td>
+                    </div>
+                </tr>
+            </tbody>
+        </table>
+    </div>
+    <div class="editcommentform">
+        <input type="text" id="editcommentinput">
+        <button onclick="editcomment()">수정완료</button>
     </div>
 
 </div>

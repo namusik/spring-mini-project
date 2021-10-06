@@ -1,10 +1,12 @@
-package com.woosik.springminiproject.domain;
+package com.woosik.springminiproject.model;
 
 import com.woosik.springminiproject.dto.PostDto;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 
 import javax.persistence.*;
+import java.util.ArrayList;
+import java.util.List;
 
 @Entity
 @NoArgsConstructor
@@ -16,24 +18,22 @@ public class Post extends Timestamped {
     @Column
     private String title;
     @Column
-    private String username;
-    @Column
-    private String password;
+    private String nickname;
     @Column
     private String content;
+//    @OneToMany(mappedBy = "post") //왜 이걸 써야 양방향 매핑이 될까. 객체와 테이블간에 연관관계의 차이를 알아야 한다
+//    private List<Comment> comments = new ArrayList<>();
 
-    public Post(String title, String username, String content, String password) {
+    public Post(String title, String nickname, String content, String password) {
         this.title = title;
-        this.username = username;
+        this.nickname = nickname;
         this.content = content;
-        this.password = password;
     }
 
     public Post(PostDto postDto) {
         this.title = postDto.getTitle();
-        this.username = postDto.getUsername();
+        this.nickname = postDto.getNickname();
         this.content = postDto.getContent();
-        this.password = postDto.getPassword();
     }
 
     @Override
@@ -41,16 +41,14 @@ public class Post extends Timestamped {
         return "Post{" +
                 "id=" + id +
                 ", title='" + title + '\'' +
-                ", username='" + username + '\'' +
-                ", password='" + password + '\'' +
+                ", nickname='" + nickname + '\'' +
                 ", content='" + content + '\'' +
                 '}';
     }
 
     public void update(PostDto postDto) {
         this.title = postDto.getTitle();
-        this.username = postDto.getUsername();
+        this.nickname = postDto.getNickname();
         this.content = postDto.getContent();
-        this.password = postDto.getPassword();
     }
 }

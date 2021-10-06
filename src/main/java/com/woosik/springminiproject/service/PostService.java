@@ -1,6 +1,6 @@
 package com.woosik.springminiproject.service;
 
-import com.woosik.springminiproject.domain.Post;
+import com.woosik.springminiproject.model.Post;
 import com.woosik.springminiproject.dto.PostDto;
 import com.woosik.springminiproject.repository.PostRepository;
 import lombok.RequiredArgsConstructor;
@@ -28,9 +28,14 @@ public class PostService {
         if (index.equals("제목")) {
             return postRepository.findByTitleContainingOrderByModifiedAtDesc(searchword);
         } else if (index.equals("작성자")) {
-            return postRepository.findByUsernameContainingOrderByModifiedAtDesc(searchword);
+            return postRepository.findByNicknameContainingOrderByModifiedAtDesc(searchword);
         } else {
             return postRepository.findByContentContainingOrderByModifiedAtDesc(searchword);
         }
+    }
+
+    //특정 post 찾아오기
+    public Post getPost(Long postId) {
+        return postRepository.findById(postId).orElse(null);
     }
 }
