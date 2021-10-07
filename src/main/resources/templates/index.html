@@ -48,6 +48,14 @@
         }
 
         function search() {
+            /*<![CDATA[*/
+            var nickname = "[[${nickname}]]";
+            /*]]>*/
+            console.log(nickname);
+            if(nickname === ""){
+                alert("로그인이 필요한 기능입니다");
+                window.location.href="/user/login";
+            }
             let index = $('#sel1').val();
             let searchword = $('#title').val();
             if (searchword === '') {
@@ -57,6 +65,7 @@
             $.ajax({
                 type: "GET",
                 url: `/api/search/${searchword}/${index}`,
+                contentType: "application/json",
                 success: function (response) {
                     console.log(response);
                     if (response.length < 1) {
@@ -77,6 +86,18 @@
                     }
                 }
             })
+        }
+
+        function writePost() {
+            /*<![CDATA[*/
+            var nickname = "[[${nickname}]]";
+            /*]]>*/
+            console.log(nickname);
+            if(nickname === ""){
+                alert("로그인이 필요한 기능입니다");
+                window.location.href="/user/login";
+            }
+            window.location.href='/writeform'
         }
     </script>
 </head>
@@ -102,7 +123,7 @@
             로그아웃
         </a>
     </div>
-    <button onclick="window.location.href='/writeform'">글 쓰기</button>
+    <button onclick="writePost()">글 쓰기</button>
     <p class="search">
         <select class="form-control" id="sel1" style="width: 150px">
             <option>제목</option>

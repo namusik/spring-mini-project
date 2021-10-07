@@ -41,7 +41,6 @@ public class PostController {
         }
     }
 
-
     //전체 게시물 불러오기
     @GetMapping("/api/posts")
     @ResponseBody

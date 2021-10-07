@@ -1,11 +1,14 @@
 package com.woosik.springminiproject.controller;
 
 import com.fasterxml.jackson.core.JsonProcessingException;
+import com.sun.org.apache.xpath.internal.operations.Mod;
 import com.woosik.springminiproject.dto.UserDto;
 import com.woosik.springminiproject.model.User;
+import com.woosik.springminiproject.security.UserDetailsImpl;
 import com.woosik.springminiproject.service.KakaoUserService;
 import com.woosik.springminiproject.service.UserService;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
@@ -25,16 +28,23 @@ public class UserController {
 
     //회원가입 페이지 이동
     @GetMapping("user/signup")
-    public String signupForm() {
+    public String signupForm(@AuthenticationPrincipal UserDetailsImpl userDetails, Model model) {
+        try {
+            User user = userDetails.getUser();
+            model.addAttribute("user", user);
+        }catch (NullPointerException e){
+            return "signup";
+        }
         return "signup";
     }
 
     //회원가입
+    @ResponseBody
     @PostMapping("user/signup")
-    public String signUp(UserDto userDto) {
+    public User signUp(@RequestBody UserDto userDto) {
         User user = userService.signup(userDto);
         System.out.println(user);
-        return "login";
+        return user;
     }
 
     @ResponseBody
@@ -46,7 +56,14 @@ public class UserController {
 
     //로그인 페이지 이동
     @GetMapping("user/login")
-    public String loginForm() {
+    public String loginForm(@AuthenticationPrincipal UserDetailsImpl userDetails, Model model) {
+        try {
+            User user = userDetails.getUser();
+            model.addAttribute("user", user);
+        }catch (NullPointerException e){
+            model.addAttribute("user", "");
+            return "login";
+        }
         return "login";
     }
     
