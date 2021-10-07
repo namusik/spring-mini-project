@@ -59,4 +59,14 @@ public class UserService {
         return userRepository.findByNickname(nickname_give)
                 .orElse(null);
     }
+
+    public String findByNickname(String username) {
+        User user = userRepository.findByNickname(username)
+                .orElse(null);
+        if (user == null) {
+            return "false";
+        } else {
+            return "true";
+        }
+    }
 }

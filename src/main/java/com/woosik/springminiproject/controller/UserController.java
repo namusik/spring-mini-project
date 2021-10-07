@@ -59,4 +59,10 @@ public class UserController {
         return "redirect:/";
     }
 
+    @PostMapping("user/check_dup")
+    @ResponseBody
+    public String nicknameDuplicate(@ModelAttribute("username_give") String username) {
+        return userService.findByNickname(username);
+    }
+
 }
