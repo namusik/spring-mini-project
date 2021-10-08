@@ -1,7 +1,6 @@
 package com.woosik.springminiproject.controller;
 
 import com.fasterxml.jackson.core.JsonProcessingException;
-import com.sun.org.apache.xpath.internal.operations.Mod;
 import com.woosik.springminiproject.dto.UserDto;
 import com.woosik.springminiproject.model.User;
 import com.woosik.springminiproject.security.UserDetailsImpl;
