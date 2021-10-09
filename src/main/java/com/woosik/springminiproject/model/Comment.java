@@ -36,6 +36,7 @@ public class Comment extends Timestamped {
     }
 
     public Comment(CommentDto commentDto) {
+
         this.context = commentDto.getContext();
     }
 
@@ -50,6 +51,7 @@ public class Comment extends Timestamped {
     }
 
     public void update(CommentDto commentDto) {
+
         this.context = commentDto.getContext();
     }
 }

@@ -39,7 +39,7 @@ public class CommentController {
     //댓글 수정
     @PutMapping("/comment/{commentId}")
     @ResponseBody
-    public Comment editCommnet(@PathVariable Long commentId, @RequestBody CommentDto commentDto) {
+    public Comment editComment(@PathVariable Long commentId, @RequestBody CommentDto commentDto) {
         System.out.println(commentId);
         System.out.println(commentDto);
         return commentService.editComment(commentId, commentDto);

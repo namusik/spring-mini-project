@@ -9,7 +9,7 @@ public interface PostRepository extends JpaRepository<Post, Long> {
 
     List<Post> findByTitleContainingOrderByModifiedAtDesc(String title);
 
-    List<Post> findByNicknameContainingOrderByModifiedAtDesc(String username);
+    List<Post> findByUser_NicknameContainingOrderByModifiedAtDesc(String username);
 
     List<Post> findByContentContainingOrderByModifiedAtDesc(String content);
 

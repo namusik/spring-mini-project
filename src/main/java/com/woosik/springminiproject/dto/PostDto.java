@@ -12,14 +12,12 @@ import lombok.Setter;
 @NoArgsConstructor
 public class PostDto {
     private String title;
-    private String nickname;
     private String content;
 
     @Override
     public String toString() {
         return "PostDto{" +
                 "title='" + title + '\'' +
-                ", nickname='" + nickname + '\'' +
                 ", content='" + content + '\'' +
                 '}';
     }

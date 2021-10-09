@@ -28,6 +28,7 @@ public class CommentService {
     
     //postId로 commnets 가져오기
     public List<Comment> getComments(Post post) {
+
         return commentRepository.findAllByPostOrderByModifiedAtDesc(post);
     }
 

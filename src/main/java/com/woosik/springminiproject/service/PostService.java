@@ -28,7 +28,7 @@ public class PostService {
         if (index.equals("제목")) {
             return postRepository.findByTitleContainingOrderByModifiedAtDesc(searchword);
         } else if (index.equals("작성자")) {
-            return postRepository.findByNicknameContainingOrderByModifiedAtDesc(searchword);
+            return postRepository.findByUser_NicknameContainingOrderByModifiedAtDesc(searchword);
         } else {
             return postRepository.findByContentContainingOrderByModifiedAtDesc(searchword);
         }

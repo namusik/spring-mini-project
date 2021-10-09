@@ -45,6 +45,7 @@ public class PostController {
     @GetMapping("/api/posts")
     @ResponseBody
     public List<Post> getPosts() {
+
         return postRepository.findAllByOrderByModifiedAtDesc();
     }
 
@@ -60,8 +61,8 @@ public class PostController {
     @ResponseBody
     public Post savePost(@RequestBody PostDto postDto, @AuthenticationPrincipal UserDetailsImpl userDetails) {
         System.out.println(postDto);
-        postDto.setNickname(userDetails.getUsername());
-        Post post = new Post(postDto);
+        User user = userDetails.getUser();
+        Post post = new Post(postDto, user);
         System.out.println(post);
         return postRepository.save(post);
     }

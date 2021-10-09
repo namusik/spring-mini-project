@@ -38,7 +38,7 @@
                         console.log(`${post}`);
                         let temp_html = `<tr>
                                             <td onclick="window.location.href='/api/posts/${post.id}'">${post.title}</td>
-                                            <td>${post.nickname}</td>
+                                            <td>${post.user.nickname}</td>
                                             <td>${post.modifiedAt}</td>
                                         </tr>`;
                         $('#posts').append(temp_html);
@@ -79,7 +79,7 @@
                         console.log(`${post}`);
                         let temp_html = `<tr>
                                             <td onclick="window.location.href='/api/posts/${post.id}'">${post.title}</td>
-                                            <td>${post.nickname}</td>
+                                            <td>${post.user.nickname}</td>
                                             <td>${post.modifiedAt}</td>
                                         </tr>`;
                         $('#posts').append(temp_html);
